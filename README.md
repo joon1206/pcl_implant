@@ -13,3 +13,7 @@ README should have the following:
 
 add more if necessary. 
 I have a repo structure written down in my notebook. 
+
+##Degradation mathematical model as derived from first order chain scission model 
+> Guys this is really fun I promise
+
