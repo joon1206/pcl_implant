@@ -64,13 +64,13 @@ def mn_t (t: np.ndarray, mn0: float, k0: float, sav: float, m: float) -> np.ndar
 """
 Young's modulus over time from Mn scaling
 """
-def e_t (t: np.ndarray, e0: float, k0: float, sav: float, alpha: float) -> np.ndarray :
+def e_t (t: np.ndarray, e0: float, k0: float, sav: float, m: float,  alpha: float) -> np.ndarray :
     kd = k0 * (sav ** m) 
     return (e0 * np.exp(-(alpha * kd) * t))
 
 
 def characteristic_time_fraction(
-        f: float, k0: float, sav: float, m: float, alpha: float) --> float:
+        f: float, k0: float, sav: float, m: float, alpha: float) -> float:
     """
     time to reach E(t)/E0 = f (where f is between 0 and 1, since E0 is original)
         f = exp (-alpha * k0 * (sav^m) * t --> t = -ln(f) / (alpha * k0 * sav^m) 
@@ -90,7 +90,7 @@ def characteristic_time_fraction(
 # now for the geometry calculations!
 #-------------------
 
-def load_mesh_compute_sav(path: str) -> Tuple()
+def load_mesh_compute_sav(path: str) -> Tuple():
     """
     Okay so this is a little funky, you start by loading a mesh, and then computing the following:
     SA = surface area
@@ -125,7 +125,8 @@ def load_mesh_compute_sav(path: str) -> Tuple()
         print("[WARN] Mesh is not watertight, volume may be inaccurate. /n"
         "   Consider exporting a closed STL or using a CAD tool to make it completely solid")
 
-    vol = float(mesh.volume) if vol <= 0: 
+    vol = float(mesh.volume)
+    if vol <= 0: 
         raise ValueError(f"computed value is not positive ({vol})."
                 "Your mesh may be not watertight / not solid!")
 
@@ -148,8 +149,8 @@ def savefig(path: str, dpi: int = 200) -> None:
     plt.close()
 
 def make_gif(frames: List[str], out_gif: str, duration_ms: int = 120) -> None:
-    imgs = [Image.open(p).convert("RGBA") for p in frames
-            imgs[0].save(
+    imgs = [Image.open(p).convert("RGBA") for p in frames]
+    imgs[0].save(
                 out_gif, 
                 save_all = True,
                 append_images=imgs[1:],
@@ -162,7 +163,7 @@ def make_gif(frames: List[str], out_gif: str, duration_ms: int = 120) -> None:
 
         
 
- -----------------------------
+# -----------------------------
 # Main plotting functions
 # -----------------------------
 def plot_E_vs_t_geometries(

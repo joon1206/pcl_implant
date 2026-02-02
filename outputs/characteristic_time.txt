@@ -1,0 +1,4 @@
+Target fraction f = 0.5
+SA/V used = 5.0
+alpha = 2.0, m = 1.0, k0 = 0.0001
+t_char (E/E0=f) = 693.1471805599452
