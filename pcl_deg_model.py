@@ -164,7 +164,7 @@ def make_gif(frames: List[str], out_gif: str, duration_ms: int = 120) -> None:
         
 
 # -----------------------------
-# Main plotting functions
+# Main plotting functions, again your typical stuff. let me know if any of these are confusing.
 # -----------------------------
 def plot_E_vs_t_geometries(
     outdir: str,
@@ -387,7 +387,7 @@ def gif_E_surface_rotate(
 
 
 # -----------------------------
-# CLI
+# CLI, dawg this was gross
 # -----------------------------
 def parse_floats(csv: str) -> List[float]:
     return [float(x.strip()) for x in csv.split(",") if x.strip()]
@@ -401,12 +401,12 @@ def main() -> None:
                     help="Comma-separated SA/V values (used if --cad not provided).")
     ap.add_argument("--outdir", type=str, default="outputs", help="Output directory.")
 
-    # Parameters
+    # params
     ap.add_argument("--mn0", type=float, default=60000.0, help="Initial Mn (e.g., g/mol).")
     ap.add_argument("--e0", type=float, default=1000.0, help="Initial E (e.g., MPa).")
 
-    # IMPORTANT: k0 depends on your units of time and SA/V.
-    # If time is in weeks and SA/V in 1/mm, k0 has units: (weeks^-1) * (mm^m).
+    # IMPORTANT: k0 depends on the units of time and SA/V. MAKE SURE TO CHECK!!! This depends on the cad file.
+    # If time is in weeks and SA/V in 1/mm, k0 has units: (weeks^-1) * (mm^m), for example. I think this can be tweaked...
     ap.add_argument("--k0", type=float, default=1e-4,
                     help="Material/environment constant in kd = k0*(SA/V)^m (units depend on your choices).")
     ap.add_argument("--m", type=float, default=1.0, help="Geometry exponent (m≈1 surface-controlled; m≈0 bulk).")
@@ -438,7 +438,7 @@ def main() -> None:
 
     ensure_outdir(args.outdir)
 
-    # Determine SA/V values
+    # this is where we determine SA/V values
     sav_values: List[float] = []
     sav_labels: List[str] = []
 
@@ -456,10 +456,10 @@ def main() -> None:
         sav_values = parse_floats(args.sav_list)
         sav_labels = [f"SA/V={v:.3g}" for v in sav_values]
 
-    # Time vector
+    #time vector
     t = np.linspace(0.0, args.tmax, args.nt)
 
-    # Plots
+    # START PLOTS
     plot_E_vs_t_geometries(
         outdir=args.outdir,
         t=t,
@@ -483,7 +483,7 @@ def main() -> None:
         alpha=args.alpha,
     )
 
-    # Log-log check using the *first* SA/V as a representative geometry
+    # Log-log check using the *first* SA/V as a representative geometry. Shouldn't be time dependent SA/V
     plot_loglog_E_vs_Mn(
         outdir=args.outdir,
         t=t,
@@ -562,7 +562,7 @@ if __name__ == "__main__":
 
 
 
-
+# :)
 
 
 
