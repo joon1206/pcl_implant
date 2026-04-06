@@ -1,0 +1,8 @@
+Hybrid implant-like degradation model (1D slab)
+L0=2.0, nx=101, dt=0.1, tmax=120.0
+k_h=0.001, beta=5.0
+D0=0.01, R=4.0
+y=1.0, k_cl=0.0
+h=0.1, C_inf=0.0
+alpha=2.0
+erosion_on=False, k_enz=0.0, Enz=0.0, Km=1.0

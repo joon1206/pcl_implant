@@ -510,7 +510,7 @@ def main() -> None:
     )
 
     # 3D surface plot across (t, SA/V)
-    t_grid = np.linspace(0.0, args.tmax, 120)
+    t_grid = np.linspace(0.0, args.tmax, 26298)
     sav_grid_surface = np.linspace(args.sav_min, args.sav_max, 120)
     plot_E_surface_3d(
         outdir=args.outdir,
