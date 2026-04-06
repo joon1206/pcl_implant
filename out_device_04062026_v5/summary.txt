@@ -1,0 +1,14 @@
+CAD degradation heat-map prototype summary
+Input mesh: Snap-Fit v5.stl
+Occupied voxels: 150452
+Voxel grid shape: (113, 45, 113)
+Voxel pitch [mm]: 0.4
+Duration [days]: 365.0
+Final mean Mn/Mn0: 0.648849
+Final mean porosity: 0.025561
+Final mean modulus/E0: 0.569972
+Final mean risk: 3.603948
+
+Interpretation
+- High risk indicates geometrically stressed regions that have also degraded locally.
+- This is a screening metric, not a substitute for full FEA.
