@@ -129,33 +129,45 @@ def characteristic_time_fraction(f: float, k0: float, sav: float, m: float, alph
 
 @dataclass(frozen=True)
 class TwoPhaseParams:
-    mn_crit: float          # threshold Mn (same units as mn0)
-    accel_factor: float     # kd multiplier in 2nd phase (>=1) (proxy for autocatalysis/erosion onset)
-    k_erosion: float        # linear mass loss rate after onset (in 1/time)
+    mn_crit: float                  # nominal Mn threshold where phase-2 begins to matter
+    accel_factor: float             # kd multiplier in 2nd phase (>=1)
+    k_erosion: float                # linear mass loss rate after onset (in 1/time)
     floor_mass_fraction: float = 0.0
+    transition_width: float = 0.30  # width of smooth transition window in time units
+    phase2_max_fraction: float = 0.90  # max weighting of phase-2 contribution (need not reach 1.0)
 
 
 @dataclass(frozen=True)
 class CrystallinityParams:
     """
-    Bulk-PCL crystallinity proxy.
+    Years-scale bulk-PCL crystallinity proxy during degradation.
 
+    This is NOT melt/non-isothermal crystallization over minutes.
+    It models the actual crystalline fraction Xc of a solid bulk PCL part
+    over long degradation times, where:
+      - amorphous regions are preferentially lost,
+      - shorter chains can reorganize,
+      - crystallinity rises gradually and then saturates.
+
+    Parameters:
     xc0: initial crystallinity fraction of processed bulk PCL
-    xc_max: upper cap for bulk PCL during degradation/reorganization
-    mn_mid: Mn where crystallinity increase becomes active
-    mn_width: smoothness of the Mn-trigger window
-    a1/kc1/nav: primary crystallization / reorganization proxy
-    a2/kc2: slower secondary crystallization proxy
+    xc_max: upper cap for crystallinity during long-term degradation
+    mn_mid, mn_width: retained for backward CLI compatibility; not used directly
+    a1: weight on the primary Mn-driven crystallinity gain
+    kc1: controls how strongly crystallinity responds to degradation progress
+    nav: nonlinearity of the Mn-driven response
+    a2: weight on a slower secondary reorganization contribution
+    kc2: time-scale for the slower secondary contribution
     """
     xc0: float = 0.45
     xc_max: float = 0.70
     mn_mid: float = 20000.0
     mn_width: float = 5000.0
-    a1: float = 0.12
-    kc1: float = 0.8
+    a1: float = 0.75
+    kc1: float = 6.0
     nav: float = 2.0
-    a2: float = 0.06
-    kc2: float = 0.08
+    a2: float = 0.25
+    kc2: float = 0.6
 
 
 def smooth_switch_from_mn(mn: np.ndarray, mn_mid: float, mn_width: float) -> np.ndarray:
@@ -172,19 +184,46 @@ def crystallinity_bulk_pcl(
     p: CrystallinityParams,
 ) -> np.ndarray:
     """
-    Bulk PCL crystallinity model:
-    - primary reorganization / crystallization rises as Mn drops
-    - slower secondary crystallization continues later
+    Years-scale bulk PCL crystallinity model during degradation.
+
+    Physical idea:
+    - Xc is the actual crystalline fraction of a solid bulk PCL part
+    - as Mn drops, degradation progress increases
+    - amorphous regions are preferentially lost and shorter chains can reorganize
+    - crystallinity rises gradually over long times and saturates at xc_max
+
+    The model uses degradation progress
+        D(t) = 1 - Mn(t)/Mn0
+    and maps it through a saturating Mn-driven response with an additional
+    slower time-gated secondary reorganization term.
+
+    This is intentionally different from Avrami-style relative crystallinity
+    curves used for melt crystallization over minutes.
     """
     t = np.asarray(t, dtype=float)
     mn = np.asarray(mn, dtype=float)
 
-    s = smooth_switch_from_mn(mn, p.mn_mid, p.mn_width)
+    mn0_ref = max(float(mn[0]), 1e-12)
+    mn_frac = np.clip(mn / mn0_ref, 0.0, 1.0)
 
-    x_primary = p.a1 * (1.0 - np.exp(-p.kc1 * (s ** p.nav) * t))
-    x_secondary = p.a2 * s * np.sqrt(np.maximum(t, 0.0)) / np.sqrt(1.0 / max(p.kc2, 1e-12))
+    # degradation progress: 0 early, 1 late
+    deg_progress = 1.0 - mn_frac
 
-    xc = p.xc0 + x_primary + x_secondary
+    # primary Mn-driven crystallinity gain
+    primary = 1.0 - np.exp(-max(p.kc1, 1e-12) * (deg_progress ** max(p.nav, 1e-12)))
+
+    # slower secondary reorganization / lamellar thickening over years
+    secondary_gate = 1.0 - np.exp(-max(p.kc2, 1e-12) * np.maximum(t, 0.0))
+    secondary = deg_progress * secondary_gate
+
+    # weighted combination, normalized to remain in [0, 1]
+    w1 = max(float(p.a1), 0.0)
+    w2 = max(float(p.a2), 0.0)
+    wsum = max(w1 + w2, 1e-12)
+    response = (w1 * primary + w2 * secondary) / wsum
+    response = np.clip(response, 0.0, 1.0)
+
+    xc = p.xc0 + (p.xc_max - p.xc0) * response
     return np.clip(xc, 0.0, p.xc_max)
 
 
@@ -215,45 +254,106 @@ def _t_when_mn_hits_threshold(mn0: float, kd: float, mn_crit: float) -> float:
     return math.log(mn0 / mn_crit) / kd
 
 
+def _sigmoid(x, k=6.0):
+    """
+    Smooth transition function (C-infinity).
+    k controls steepness (lower = smoother).
+    Numerically stable form to avoid overflow warnings.
+    """
+    x = np.asarray(x, dtype=float)
+    z = k * (x - 0.5)
+    z = np.clip(z, -60.0, 60.0)
+    return 1.0 / (1.0 + np.exp(-z))
+
+def _phase2_blend_weight(t: np.ndarray, tcrit: float, width: float, max_fraction: float) -> np.ndarray:
+    """
+    Smoothly blend phase-2 in over a finite time window around tcrit.
+    Uses a sigmoid so the transition is very gradual and fully smooth.
+    """
+    t = np.asarray(t, dtype=float)
+    if not math.isfinite(tcrit):
+        return np.zeros_like(t)
+
+    width = max(float(width), 1e-12)
+
+    # center transition at tcrit
+    u = (t - (tcrit - 0.5 * width)) / width
+
+    # lower k = smoother transition
+    w = _sigmoid(u, k=4.0)
+
+    return np.clip(max_fraction, 0.0, 1.0) * w
+
+
 def mn_two_phase(t: np.ndarray, mn0: float, k0: float, sav: float, m: float, p: TwoPhaseParams) -> np.ndarray:
     """
-    Piecewise Mn(t):
-      - phase 1: Mn0 * exp(-kd*t) until Mn reaches mn_crit
-      - phase 2: Mn_crit * exp(-kd2*(t - tcrit)), with kd2 = accel_factor * kd
+    Smooth two-phase Mn(t) using a continuously varying degradation rate.
+
+    Handles:
+    - full time arrays
+    - single-point evaluation, e.g. t=[3.0]
     """
-    kd = kd_from_sav(k0, sav, m)
-    tcrit = _t_when_mn_hits_threshold(mn0, kd, p.mn_crit)
-    kd2 = max(p.accel_factor, 1.0) * kd
+    kd1 = kd_from_sav(k0, sav, m)
+    kd2 = max(float(p.accel_factor), 1.0) * kd1
 
     t = np.asarray(t, dtype=float)
-    Mn = np.empty_like(t)
+    if t.ndim != 1:
+        raise ValueError("t must be a 1D array.")
+    if t.size == 0:
+        return np.array([], dtype=float)
 
-    mask1 = t <= tcrit
-    Mn[mask1] = mn0 * np.exp(-kd * t[mask1])
+    tcrit = _t_when_mn_hits_threshold(mn0, kd1, p.mn_crit)
 
-    mask2 = ~mask1
-    if np.any(mask2):
-        Mn[mask2] = p.mn_crit * np.exp(-kd2 * (t[mask2] - tcrit))
+    if not np.isfinite(tcrit):
+        return mn0 * np.exp(-kd1 * t)
 
-    return Mn
+    width = max(float(p.transition_width), 1e-12)
 
+    # smooth phase-2 activation centered at tcrit
+    u = (t - (tcrit - 0.5 * width)) / width
+    w = _sigmoid(u, k=4.0)
+
+    # allow phase 2 to remain a partial contribution if desired
+    w = np.clip(float(p.phase2_max_fraction), 0.0, 1.0) * w
+
+    # smoothly varying effective degradation rate
+    kd_t = (1.0 - w) * kd1 + w * kd2
+
+    # integrate kd_t over time
+    if t.size == 1:
+        # single-point evaluation: approximate by using kd_t at that time
+        integral = np.array([kd_t[0] * max(float(t[0]), 0.0)], dtype=float)
+    else:
+        dt = np.diff(t)
+        if np.any(dt <= 0):
+            raise ValueError("Time grid must be strictly increasing.")
+
+        integral = np.zeros_like(t, dtype=float)
+        integral[1:] = np.cumsum(0.5 * (kd_t[:-1] + kd_t[1:]) * dt)
+
+    mn = mn0 * np.exp(-integral)
+    return np.maximum(mn, 0.0)
 
 def mass_fraction_two_phase(t: np.ndarray, mn0: float, k0: float, sav: float, m: float, p: TwoPhaseParams) -> np.ndarray:
     """
-    Linear mass loss after onset (proxy for erosion/cell-mediated processes):
-      - before onset: mass_fraction = 1
-      - after onset:  mass_fraction = 1 - k_erosion*(t - tcrit), clipped
+    Smooth onset mass loss proxy.
+    Instead of a hard switch at tcrit, erosion is blended in gradually.
     """
     kd = kd_from_sav(k0, sav, m)
     tcrit = _t_when_mn_hits_threshold(mn0, kd, p.mn_crit)
 
     t = np.asarray(t, dtype=float)
-    frac = np.ones_like(t)
+    if not math.isfinite(tcrit):
+        return np.ones_like(t)
 
-    mask = t >= tcrit
-    if np.any(mask) and math.isfinite(tcrit):
-        frac[mask] = 1.0 - p.k_erosion * (t[mask] - tcrit)
-
+    w2 = _phase2_blend_weight(
+        t=t,
+        tcrit=tcrit,
+        width=p.transition_width,
+        max_fraction=1.0,
+    )
+    effective_elapsed = np.maximum(t - tcrit, 0.0)
+    frac = 1.0 - p.k_erosion * w2 * effective_elapsed
     return np.clip(frac, p.floor_mass_fraction, 1.0)
 
 
@@ -1018,8 +1118,8 @@ def write_crystallinity_summary(
         f.write("Bulk PCL crystallinity summary\n")
         f.write(f"xc0={cryst_params.xc0}\n")
         f.write(f"xc_max={cryst_params.xc_max}\n")
-        f.write(f"mn_mid={cryst_params.mn_mid}\n")
-        f.write(f"mn_width={cryst_params.mn_width}\n")
+        f.write(f"mn_mid={cryst_params.mn_mid}  # legacy CLI compatibility parameter\n")
+        f.write(f"mn_width={cryst_params.mn_width}  # legacy CLI compatibility parameter\n")
         f.write(f"a1={cryst_params.a1}, kc1={cryst_params.kc1}, nav={cryst_params.nav}\n")
         f.write(f"a2={cryst_params.a2}, kc2={cryst_params.kc2}\n\n")
         for sav in sav_list:
@@ -1037,6 +1137,7 @@ def write_crystallinity_summary(
 
 def parse_floats(csv: str) -> List[float]:
     return [float(x.strip()) for x in csv.split(",") if x.strip()]
+    
 
 
 def main() -> None:
@@ -1106,6 +1207,10 @@ def main() -> None:
                     help="Multiplier on kd after onset (two-phase mode).")
     ap.add_argument("--k-erosion", type=float, default=0.002,
                     help="Linear mass-loss rate after onset, in 1/time (two-phase mode).")
+    ap.add_argument("--transition-width", type=float, default=0.30,
+                    help="Width of the smooth two-phase transition window in time units.")
+    ap.add_argument("--phase2-max-fraction", type=float, default=0.90,
+                    help="Maximum phase-2 weighting. Use <1 so late behavior stays partially mixed.")
 
     # rxn-diffusion params
     ap.add_argument("--L", type=float, default=1.0, help="1D length for diffusion domain.")
@@ -1158,13 +1263,15 @@ def main() -> None:
             mn_crit=args.mn_crit,
             accel_factor=args.accel_factor,
             k_erosion=args.k_erosion,
+            transition_width=args.transition_width,
+            phase2_max_fraction=args.phase2_max_fraction,
         )
 
     # Diagnostics: report whether two-phase onset is reached for the first SA/V
     if args.mode == "two_phase" and two_phase is not None:
         kd0 = kd_from_sav(args.k0, sav_values[0], args.m)
         tcrit0 = _t_when_mn_hits_threshold(args.mn0, kd0, args.mn_crit)
-        mn_end = float(mn_two_phase(np.array([args.tmax]), args.mn0, args.k0, sav_values[0], args.m, two_phase)[0])
+        mn_end = float(mn_two_phase(np.array([args.tmax], dtype=float), args.mn0, args.k0, sav_values[0], args.m, two_phase)[0])
         print(f"[INFO] two-phase: SA/V={sav_values[0]:.6g}, kd={kd0:.6g}, Mn_crit={args.mn_crit:g}, tcrit={tcrit0:.6g}, Mn(tmax)={mn_end:.6g}")
         if (not np.isfinite(tcrit0)) or (tcrit0 > args.tmax):
             print("[INFO] two-phase onset NOT reached within tmax; outputs will match base model. Increase --tmax, --k0, SA/V, or raise --mn-crit.")
