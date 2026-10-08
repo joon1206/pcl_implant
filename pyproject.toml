@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pcl-implant-model"
+version = "0.2.0"
+description = "Mechanistic degradation and mechanical-retention model for PCL implants"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=2.0",
+  "scipy>=1.13",
+  "matplotlib>=3.9",
+  "Pillow>=10.0",
+  "trimesh>=4.4",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[project.scripts]
+pcl-model = "pcl_model.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["pcl_model*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+

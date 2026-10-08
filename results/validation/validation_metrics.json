@@ -1,0 +1,152 @@
+{
+  "empirical": {
+    "dataset": "data\\gil_castell_2019_pcl_mn.csv",
+    "fit_through_day": 400.0,
+    "held_out_days": [
+      500.0,
+      650.0
+    ],
+    "models": {
+      "random_scission": {
+        "parameters": {
+          "k_inv_kda_day": 0.00010211949512972056
+        },
+        "rmse_kda": 3.6566334903146203,
+        "mae_kda": 2.4149438264994605,
+        "fit_metrics": {
+          "rmse_kda": 3.6566334903146203,
+          "mae_kda": 2.4149438264994605
+        },
+        "held_out_metrics": {
+          "rmse_kda": 6.8617097647498575,
+          "mae_kda": 6.794892693347688
+        }
+      },
+      "exponential": {
+        "parameters": {
+          "rate_per_day": 0.002961558657508526
+        },
+        "rmse_kda": 2.7118078792306495,
+        "mae_kda": 1.9443518121774364,
+        "fit_metrics": {
+          "rmse_kda": 2.7118078792306495,
+          "mae_kda": 1.9443518121774364
+        },
+        "held_out_metrics": {
+          "rmse_kda": 2.4446228007064703,
+          "mae_kda": 2.4156181037266835
+        }
+      },
+      "autocatalytic_random_scission": {
+        "parameters": {
+          "base_rate_inv_kda_day": 4.721336003869816e-05,
+          "feedback_kda": 114.71317409464196
+        },
+        "rmse_kda": 2.3744433963994385,
+        "mae_kda": 2.077314213320611,
+        "fit_metrics": {
+          "rmse_kda": 2.3744433963994385,
+          "mae_kda": 2.077314213320611
+        },
+        "held_out_metrics": {
+          "rmse_kda": 0.4751120067696548,
+          "mae_kda": 0.38688522538316206
+        }
+      }
+    }
+  },
+  "convergence": {
+    "spatial": [
+      {
+        "cells": 20,
+        "mean_mn_final_kda": 27.603824798214507,
+        "absolute_error_vs_160_cells_kda": 0.012934454825643371
+      },
+      {
+        "cells": 40,
+        "mean_mn_final_kda": 27.596463909365557,
+        "absolute_error_vs_160_cells_kda": 0.005573565976693118
+      },
+      {
+        "cells": 80,
+        "mean_mn_final_kda": 27.592753162928638,
+        "absolute_error_vs_160_cells_kda": 0.0018628195397738523
+      },
+      {
+        "cells": 160,
+        "mean_mn_final_kda": 27.590890343388864,
+        "absolute_error_vs_160_cells_kda": 0.0
+      }
+    ],
+    "temporal": [
+      {
+        "maximum_step_days": 4.0,
+        "mean_mn_final_kda": 27.592753293174876,
+        "absolute_error_vs_0.5_day_step_kda": 1.3349076155577677e-07
+      },
+      {
+        "maximum_step_days": 2.0,
+        "mean_mn_final_kda": 27.59275317422527,
+        "absolute_error_vs_0.5_day_step_kda": 1.4541154058633765e-08
+      },
+      {
+        "maximum_step_days": 1.0,
+        "mean_mn_final_kda": 27.592753162928638,
+        "absolute_error_vs_0.5_day_step_kda": 3.244522872591915e-09
+      },
+      {
+        "maximum_step_days": 0.5,
+        "mean_mn_final_kda": 27.592753159684115,
+        "absolute_error_vs_0.5_day_step_kda": 0.0
+      }
+    ]
+  },
+  "limiting_cases": {
+    "vanishing_hydrolysis_mn_change_kda": 0.0,
+    "no_autocatalysis_final_mn_kda": 35.15397045747708,
+    "strong_clearance_final_mn_kda": 34.72496722452216,
+    "no_clearance_final_mn_kda": 33.41479452569787,
+    "clearance_slows_degradation": true
+  },
+  "equal_sav_geometry": {
+    "slab": {
+      "characteristic_length_mm": 1.0,
+      "surface_to_volume_per_mm": 1.0,
+      "final_mean_mn_kda": 6.799981467340547,
+      "damkohler": 0.9919080000000001
+    },
+    "cylinder": {
+      "characteristic_length_mm": 2.0,
+      "surface_to_volume_per_mm": 1.0,
+      "final_mean_mn_kda": 6.188658449371131,
+      "damkohler": 3.9676320000000005
+    },
+    "sphere": {
+      "characteristic_length_mm": 3.0,
+      "surface_to_volume_per_mm": 1.0,
+      "final_mean_mn_kda": 6.05265821120525,
+      "damkohler": 8.927172
+    }
+  },
+  "cad_audit": {
+    "path": "Snap-Fit v5.stl",
+    "assumed_input_unit": "mm",
+    "vertices": 3348,
+    "faces": 6756,
+    "watertight": true,
+    "winding_consistent": true,
+    "connected_components": 1,
+    "euler_number": -30,
+    "surface_area_mm2": 7868.083663217929,
+    "volume_mm3": 7733.711213795114,
+    "surface_to_volume_per_mm": 1.0173748987656956,
+    "hydraulic_length_mm": 0.9829218326628903,
+    "bounding_box_mm": [
+      45.0,
+      17.573688507080078,
+      45.0
+    ],
+    "minimum_bbox_dimension_mm": 17.573688507080078
+  },
+  "runtime_seconds": 7.02319079998415
+}
