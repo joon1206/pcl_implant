@@ -57,5 +57,5 @@ In vivo PCL degradation adds enzymes, cells, phagocytosis, fluid renewal, mechan
 
 ## Dataset selected for validation
 
-Gil-Castell et al. provide tabulated \(M_n\) for electrospun PCL in water and PBS through 650 days. The values are transcribed in `data/gil_castell_2019_pcl_mn.csv`. The water series was chosen before fitting: days 0--400 are calibration data and days 500 and 650 are held out. This tests molecular-weight kinetics only; it does not validate local profiles, mass loss, or mechanics.
+Gil-Castell et al. provide tabulated \(M_n\) for electrospun PCL in water and PBS through 650 days. The values are transcribed in `data/gil_castell_2019_pcl_mn.csv`. The water series was chosen before fitting: days 0--400 are calibration data and days 500 and 650 are held out. The PBS arm is now also used in two ways: as an environment shift with water parameters frozen, and with its own day-0--400 calibration followed by the same late holdout. These tests cover molecular-weight kinetics only; they do not validate local profiles, mass loss, or mechanics. Because both media come from the same publication and material batch, the PBS test is not an independent-laboratory replication.
 

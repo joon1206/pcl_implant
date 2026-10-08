@@ -41,3 +41,25 @@
 **Result:** retained with an explicit millimetre assumption. The mesh is watertight and consistently wound. Its negative Euler number warns that topology and internal accessible surfaces cannot be represented by a single half-thickness.  
 **Decision:** report scalar descriptors only; do not display invented mesh-resolved degradation fields.
 
+## Iteration 6 — medium-shift and uncertainty audit
+
+**Hypothesis:** the water-calibrated autocatalytic law retains its advantage under a PBS environment shift.
+**Test:** freeze water day-0--400 parameters and score every nonzero PBS observation, with days 500/650 reported separately; also fit PBS through day 400 as a secondary check.
+**Result:** supported within this study. Without refitting, late PBS RMSE was 1.058 kDa, versus 3.673 kDa exponential and 8.010 kDa constant scission. PBS-specific refitting did not improve autocatalytic late prediction (2.563 kDa), illustrating that a better training fit is not guaranteed to extrapolate better.
+**Uncertainty:** 2,000 multiplicative residual bootstrap fits kept both late water observations inside 95% predictive intervals, but the kinetic parameters were strongly anticorrelated.
+**Decision:** retain the predictive law while explicitly treating its individual parameters as weakly separated.
+
+## Iteration 7 — distribution-level random-scission consequence
+
+**Hypothesis:** independent bond cleavage from initially monodisperse chains produces an auditable prediction for \(M_w\) and dispersity from \(M_n\).
+**Test:** derive the exact connected-repeat-unit pair sum and verify unbroken-chain and monotonic-cleavage limits.
+**Result:** retained analytically. Mapping the selected water series predicts dispersity from 1.000 initially to 1.952 at day 650.
+**Decision:** expose the calculation as a falsifiable hypothesis, not validation; the dataset has no full distribution measurements and real PCL is initially polydisperse.
+
+## Iteration 8 — global sensitivity
+
+**Hypothesis:** transport and reaction parameters can be ranked reproducibly over declared ranges.
+**Test:** 1,024 coupled simulations from a scrambled Sobol/Saltelli design, with 64-versus-128 base-sample changes retained.
+**Result:** intrinsic scission rate dominated two-year \(M_n\) (total-order index 0.619) and weakest strength (0.562); autocatalysis, diffusivity, and mass transfer contributed. Mass-retention rankings were unstable because the first-order estimate for diffusivity shifted 0.406 between sample sizes.
+**Decision:** accept \(M_n\)/strength as screening-grade and reject a mass-retention ranking at this sample size.
+

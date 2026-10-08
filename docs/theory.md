@@ -37,8 +37,7 @@ The local scission equation is
 \frac{\partial I}{\partial t}
 =k_s f_T f_{\mathrm{pH}}
 \frac{1-X_c}{1-X_{c,0}}
-(k_s f_T f_{\mathrm{pH}})
-\frac{1-X_c}{1-X_{c,0}}\,\beta a,
+(1+\beta a),
 \]
 
 or compactly
@@ -92,6 +91,30 @@ I(t)=I_0+\frac{\exp(k_sgt)-1}{g},
 \]
 
 This connects the independently testable kinetic law to the spatial PDE.
+
+## Ideal molecular-weight distribution moments
+
+For an initially monodisperse chain of \(n\) repeat units, let every one of its \(n-1\) bonds break independently with probability \(p\). The expected fragment count is \(1+(n-1)p\), giving
+
+\[
+M_n=\frac{M_{n,0}}{1+(n-1)p}.
+\]
+
+Two repeat units separated by \(d\) bonds remain in one fragment with probability \((1-p)^d\). The expected sum of squared fragment lengths is therefore
+
+\[
+\mathbb E\!\left[\sum_j \ell_j^2\right]
+=n+2\sum_{d=1}^{n-1}(n-d)(1-p)^d,
+\]
+
+and
+
+\[
+M_w=\frac{M_{n,0}}{n^2}\mathbb E\!\left[\sum_j \ell_j^2\right],
+\qquad Đ=\frac{M_w}{M_n}.
+\]
+
+This is an exact distribution-level consequence of the ideal cleavage assumptions. It is not a full population balance: real initial dispersity, preferential amorphous cleavage, soluble-fragment escape, branching, and SEC measurement effects are excluded.
 
 ## Morphology and delayed mass loss
 
@@ -157,6 +180,10 @@ The model reports
 \]
 
 \(\mathrm{Da}\ll1\) suggests nearly uniform reaction-limited behavior; \(\mathrm{Da}\gg1\) warns that transport can generate spatial gradients. These are screening criteria, not rigorous error bounds.
+
+## Global sensitivity estimators
+
+The sensitivity workflow draws scrambled Sobol points for two base matrices \(A\) and \(B\), evaluates column-replacement matrices \(A_B^{(i)}\), and reports the Saltelli first-order and Jansen total-order estimators. Parameter ranges and linear/logarithmic measures are written into the result file. A 64-versus-128 base-sample comparison is retained as a convergence diagnostic. These are range-dependent screening indices, not posterior probabilities or measured causal effects.
 
 ## Discretization
 

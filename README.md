@@ -16,6 +16,8 @@ On long-duration electrospun-PCL data from Gil-Castell et al. (2019), models wer
 
 This is evidence for the kinetic core on one dataset, not validation of the spatial, mass-loss, or mechanical submodels. See [validation](docs/validation.md) and [novelty assessment](docs/novelty_assessment.md).
 
+The same water-calibrated laws were then applied to the paper's PBS series without refitting. On the late 500/650-day PBS observations, autocatalytic random scission retained the lowest RMSE (1.058 kDa), versus exponential (3.673 kDa) and constant random scission (8.010 kDa). Because water and PBS are arms of one study rather than independent laboratories, this is environment-shift evidence, not broad external validation.
+
 ## Model summary
 
 The local inverse number-average molecular weight \(I=1/M_n\) evolves as
@@ -78,6 +80,7 @@ Reproduce all validation figures and metrics:
 
 ```text
 python -m experiments.run_validation --outdir results/validation
+python -m experiments.run_sensitivity --outdir results/sensitivity --base-samples 128
 python -m pytest -q
 ```
 
@@ -135,6 +138,9 @@ Supported and verified:
 - stiff integration, convergence tests, positivity checks, and limiting cases;
 - explicit units and strict parameter validation;
 - reproducible empirical comparison and CAD scalar audit.
+- multiplicative residual bootstrap, log-parameter identifiability audit, and cross-medium evaluation;
+- exact distribution moments for initially monodisperse chains under independent random bond cleavage;
+- deterministic Saltelli/Sobol screening of the coupled model.
 
 Exploratory, not yet empirically validated:
 
@@ -144,9 +150,9 @@ Exploratory, not yet empirically validated:
 - functional-failure time;
 - geometry extrapolation beyond ideal radial domains.
 
-Not implemented:
+Not implemented or not yet identified from data:
 
-- full molecular-weight distributions;
+- arbitrary initial or experimentally calibrated full molecular-weight distributions;
 - enzymatic binding kinetics;
 - moving-boundary erosion;
 - stress-assisted chemistry;
@@ -161,6 +167,7 @@ Not implemented:
 - [Research log, including negative results](docs/research_log.md)
 - [Verification and validation](docs/validation.md)
 - [Novelty assessment](docs/novelty_assessment.md)
+- [Prospective experimental protocol](docs/experimental_protocol.md)
 - [BibTeX references](docs/references.bib)
 
 ## Citation and reproducibility

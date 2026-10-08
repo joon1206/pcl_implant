@@ -12,5 +12,7 @@ results/*
 !results/simulation/**
 !results/validation/
 !results/validation/**
+!results/sensitivity/
+!results/sensitivity/**
 
 

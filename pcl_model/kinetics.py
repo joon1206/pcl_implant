@@ -6,6 +6,29 @@ import numpy as np
 from scipy.optimize import least_squares
 
 
+def fit_autocatalytic_random_scission(
+    time_days: np.ndarray,
+    mn_kda: np.ndarray,
+    *,
+    mn0_kda: float | None = None,
+):
+    """Fit the autocatalytic law in log-parameter space.
+
+    The returned SciPy result exposes the residual Jacobian needed for a local
+    identifiability audit.  ``mn0_kda`` can be fixed when fitting bootstrap
+    replicates so resampling does not silently alter the initial condition.
+    """
+
+    time = np.asarray(time_days, dtype=float)
+    observed = np.asarray(mn_kda, dtype=float)
+    initial_mn = float(observed[0] if mn0_kda is None else mn0_kda)
+    return least_squares(
+        lambda z: autocatalytic_random_scission_mn(time, initial_mn, *np.exp(z)) - observed,
+        np.log([5e-5, 100.0]),
+        bounds=(np.log([1e-10, 1e-4]), np.log([1.0, 1e7])),
+    )
+
+
 def random_scission_mn(time_days: np.ndarray, mn0_kda: float, k_inv_kda_day: float) -> np.ndarray:
     """Constant random scission: 1/Mn = 1/Mn0 + k t."""
     return 1.0 / (1.0 / mn0_kda + k_inv_kda_day * np.asarray(time_days))
@@ -46,11 +69,7 @@ def fit_kinetic_models(time_days: np.ndarray, mn_kda: np.ndarray) -> dict[str, d
         lambda z: exponential_mn(time, mn0, np.exp(z[0])) - observed,
         np.log([2e-3]),
     )
-    auto_fit = least_squares(
-        lambda z: autocatalytic_random_scission_mn(time, mn0, *np.exp(z)) - observed,
-        np.log([5e-5, 100.0]),
-        bounds=(np.log([1e-10, 1e-4]), np.log([1.0, 1e7])),
-    )
+    auto_fit = fit_autocatalytic_random_scission(time, observed, mn0_kda=mn0)
     definitions = {
         "random_scission": (
             np.exp(random_fit.x),

@@ -1,0 +1,199 @@
+{
+  "method": "scrambled Sobol sequence; Saltelli first-order and Jansen total-order estimators",
+  "seed": 20261007,
+  "base_samples": 128,
+  "model_evaluations": 1024,
+  "simulation_config": {
+    "geometry": "cylinder",
+    "characteristic_length_mm": 2.0,
+    "duration_days": 730.0,
+    "output_interval_days": 730.0,
+    "cells": 20,
+    "relative_tolerance": 1e-05,
+    "absolute_tolerance": 1e-08,
+    "maximum_step_days": 5.0,
+    "functional_strength_fraction": 0.5
+  },
+  "parameter_ranges": [
+    {
+      "name": "scission_rate_inv_kda_day",
+      "lower": 2e-05,
+      "upper": 8e-05,
+      "logarithmic": true
+    },
+    {
+      "name": "autocatalysis_per_acid",
+      "lower": 0.5,
+      "upper": 6.0,
+      "logarithmic": false
+    },
+    {
+      "name": "acid_diffusivity_mm2_day",
+      "lower": 0.002,
+      "upper": 0.2,
+      "logarithmic": true
+    },
+    {
+      "name": "mass_transfer_mm_day",
+      "lower": 0.005,
+      "upper": 0.5,
+      "logarithmic": true
+    },
+    {
+      "name": "chemicrystallization_gain",
+      "lower": 0.05,
+      "upper": 0.3,
+      "logarithmic": false
+    },
+    {
+      "name": "dissolution_rate_per_day",
+      "lower": 0.01,
+      "upper": 0.08,
+      "logarithmic": true
+    }
+  ],
+  "outputs": {
+    "final_mn_kda": {
+      "first_order": [
+        0.5249010543503627,
+        0.041075744002184236,
+        0.16206937386097445,
+        0.047083066228723686,
+        0.02331055458099209,
+        -0.0020131283372570915
+      ],
+      "total_order": [
+        0.6187969076517145,
+        0.2249968979700197,
+        0.15858069562916044,
+        0.1374628563297036,
+        0.010656794907949185,
+        0.0008504706319275957
+      ],
+      "parameter_order": [
+        "scission_rate_inv_kda_day",
+        "autocatalysis_per_acid",
+        "acid_diffusivity_mm2_day",
+        "mass_transfer_mm_day",
+        "chemicrystallization_gain",
+        "dissolution_rate_per_day"
+      ],
+      "output_mean": 15.152104717544479,
+      "output_standard_deviation": 6.4645912765414995,
+      "sample_size_convergence": {
+        "first_order_absolute_change_from_half_sample": [
+          0.015977573512874987,
+          0.0026200433550402913,
+          0.023957446713755687,
+          0.025027480889872,
+          0.027020416404178776,
+          0.006184859195236123
+        ],
+        "total_order_absolute_change_from_half_sample": [
+          0.00024135227160049233,
+          0.01031030283861839,
+          0.004950262504620134,
+          0.017920572272457275,
+          0.0002826118794727085,
+          0.0004958755932527123
+        ]
+      },
+      "estimator_quality": "screening-grade"
+    },
+    "mass_retention": {
+      "first_order": [
+        0.4900404122286735,
+        0.4226764652321442,
+        0.815728052067258,
+        0.19069031840703912,
+        0.08522375301040062,
+        0.029384523036915376
+      ],
+      "total_order": [
+        0.6286043476425454,
+        0.5613845393868859,
+        0.7578275106539298,
+        0.3440525497072344,
+        0.04463604692507412,
+        0.020535337114810325
+      ],
+      "parameter_order": [
+        "scission_rate_inv_kda_day",
+        "autocatalysis_per_acid",
+        "acid_diffusivity_mm2_day",
+        "mass_transfer_mm_day",
+        "chemicrystallization_gain",
+        "dissolution_rate_per_day"
+      ],
+      "output_mean": 0.927387246727405,
+      "output_standard_deviation": 0.22475577626578705,
+      "sample_size_convergence": {
+        "first_order_absolute_change_from_half_sample": [
+          0.004271995199012113,
+          0.07114845854422047,
+          0.40587947931193213,
+          0.24179355633258234,
+          0.034819068578126326,
+          0.02983226316124487
+        ],
+        "total_order_absolute_change_from_half_sample": [
+          0.004709427242697295,
+          0.07947582975125683,
+          0.1846823842109031,
+          0.04292588818158399,
+          0.02675743540240325,
+          0.0012025359253798641
+        ]
+      },
+      "estimator_quality": "unstable; do not rank parameters from these indices"
+    },
+    "weakest_strength_fraction": {
+      "first_order": [
+        0.46551727247377206,
+        0.09480058834080617,
+        0.21966311700660074,
+        0.03219558146615052,
+        0.018883666066585782,
+        -0.0005069840650090738
+      ],
+      "total_order": [
+        0.5615663800131604,
+        0.24246595503912646,
+        0.23720130657600752,
+        0.09559269266548368,
+        0.008520490070423237,
+        2.792200470542178e-06
+      ],
+      "parameter_order": [
+        "scission_rate_inv_kda_day",
+        "autocatalysis_per_acid",
+        "acid_diffusivity_mm2_day",
+        "mass_transfer_mm_day",
+        "chemicrystallization_gain",
+        "dissolution_rate_per_day"
+      ],
+      "output_mean": 0.2889240775982822,
+      "output_standard_deviation": 0.17055667374135236,
+      "sample_size_convergence": {
+        "first_order_absolute_change_from_half_sample": [
+          0.007165995663508284,
+          0.017452718764832342,
+          0.008629982025217892,
+          0.015285912685591284,
+          0.020687064712204665,
+          0.000561848536006686
+        ],
+        "total_order_absolute_change_from_half_sample": [
+          0.0026791117576512313,
+          0.003467926983540204,
+          0.0005749394672630581,
+          0.010379264222149395,
+          0.0006918172751914815,
+          2.7566432946182114e-06
+        ]
+      },
+      "estimator_quality": "screening-grade"
+    }
+  },
+  "runtime_seconds": 64.9058662999887
+}

@@ -55,6 +55,268 @@
       }
     }
   },
+  "cross_environment": {
+    "calibration_cutoff_day": 400.0,
+    "models": {
+      "random_scission": {
+        "water_calibrated_no_refit_all_nonzero": {
+          "rmse_kda": 5.186836553536491,
+          "mae_kda": 3.9818521763421546
+        },
+        "water_calibrated_no_refit_late": {
+          "rmse_kda": 8.009918279470698,
+          "mae_kda": 8.009892693347687
+        },
+        "pbs_calibrated_fit": {
+          "rmse_kda": 3.098283314126981,
+          "mae_kda": 2.066876151396663
+        },
+        "pbs_calibrated_held_out": {
+          "rmse_kda": 7.385484868329767,
+          "mae_kda": 7.385274216833777
+        },
+        "pbs_fit_parameters": {
+          "k_inv_kda_day": 0.00010990153687923075
+        }
+      },
+      "exponential": {
+        "water_calibrated_no_refit_all_nonzero": {
+          "rmse_kda": 3.0772110539781283,
+          "mae_kda": 2.921049582931141
+        },
+        "water_calibrated_no_refit_late": {
+          "rmse_kda": 3.673482464668541,
+          "mae_kda": 3.6306181037266834
+        },
+        "pbs_calibrated_fit": {
+          "rmse_kda": 2.510832836191209,
+          "mae_kda": 2.1922976490047397
+        },
+        "pbs_calibrated_held_out": {
+          "rmse_kda": 3.1203168401361294,
+          "mae_kda": 3.078874799954786
+        },
+        "pbs_fit_parameters": {
+          "rate_per_day": 0.0030921791046117668
+        }
+      },
+      "autocatalytic_random_scission": {
+        "water_calibrated_no_refit_all_nonzero": {
+          "rmse_kda": 2.61646761151724,
+          "mae_kda": 2.2343021184510485
+        },
+        "water_calibrated_no_refit_late": {
+          "rmse_kda": 1.058467352821882,
+          "mae_kda": 0.8281147746168376
+        },
+        "pbs_calibrated_fit": {
+          "rmse_kda": 2.497466525764721,
+          "mae_kda": 2.229130594597002
+        },
+        "pbs_calibrated_held_out": {
+          "rmse_kda": 2.563254508680463,
+          "mae_kda": 2.5034138088074203
+        },
+        "pbs_fit_parameters": {
+          "base_rate_inv_kda_day": 6.832387415824221e-05,
+          "feedback_kda": 52.24978099341683
+        }
+      }
+    }
+  },
+  "uncertainty_identifiability": {
+    "method": "fixed-initial-condition multiplicative residual bootstrap in log(Mn)",
+    "seed": 20261007,
+    "requested_samples": 2000,
+    "successful_samples": 2000,
+    "parameters": {
+      "base_rate_inv_kda_day": [
+        1.7871428823360307e-05,
+        4.520713270782739e-05,
+        0.00012189690150477811
+      ],
+      "feedback_kda": [
+        0.00010000023900752176,
+        125.61265493818594,
+        546.833206319063
+      ],
+      "percentile_order": [
+        2.5,
+        50.0,
+        97.5
+      ],
+      "bootstrap_log_parameter_correlation": -0.6846839759815929
+    },
+    "local_log_parameter_jacobian_condition_number": 10.983489337035717,
+    "local_log_parameter_correlation": -0.9738371598973133,
+    "predictions": [
+      {
+        "time_days": 0.0,
+        "observed_mn_kda": 42.03,
+        "confidence_interval_kda": [
+          42.03,
+          42.03,
+          42.03
+        ],
+        "predictive_interval_kda": [
+          33.085511817302056,
+          43.47049886808989,
+          49.35673555791387
+        ],
+        "inside_95_percent_predictive_interval": true
+      },
+      {
+        "time_days": 50.0,
+        "observed_mn_kda": 36.08,
+        "confidence_interval_kda": [
+          33.37904072627273,
+          37.8838087093328,
+          40.09312403285179
+        ],
+        "predictive_interval_kda": [
+          28.077615964042792,
+          38.12744071711748,
+          46.18669440787574
+        ],
+        "inside_95_percent_predictive_interval": true
+      },
+      {
+        "time_days": 100.0,
+        "observed_mn_kda": 30.01,
+        "confidence_interval_kda": [
+          27.594327068407765,
+          33.510272854352564,
+          37.319888343339635
+        ],
+        "predictive_interval_kda": [
+          24.06953827433874,
+          33.536298263256555,
+          42.38618694328571
+        ],
+        "inside_95_percent_predictive_interval": true
+      },
+      {
+        "time_days": 200.0,
+        "observed_mn_kda": 27.81,
+        "confidence_interval_kda": [
+          20.107943663874018,
+          24.754066219750207,
+          29.05882396131166
+        ],
+        "predictive_interval_kda": [
+          17.64495064171779,
+          24.939309000593333,
+          32.24332597270129
+        ],
+        "inside_95_percent_predictive_interval": true
+      },
+      {
+        "time_days": 300.0,
+        "observed_mn_kda": 18.47,
+        "confidence_interval_kda": [
+          14.185180474481585,
+          16.96888001374119,
+          19.439499950725622
+        ],
+        "predictive_interval_kda": [
+          12.261430091437507,
+          17.264795130583927,
+          21.694135175692782
+        ],
+        "inside_95_percent_predictive_interval": true
+      },
+      {
+        "time_days": 400.0,
+        "observed_mn_kda": 8.35,
+        "confidence_interval_kda": [
+          7.473750997890207,
+          11.0217911461339,
+          14.093473249707467
+        ],
+        "predictive_interval_kda": [
+          6.975472912876522,
+          10.972199394490977,
+          15.400896272680644
+        ],
+        "inside_95_percent_predictive_interval": true
+      },
+      {
+        "time_days": 500.0,
+        "observed_mn_kda": 7.52,
+        "confidence_interval_kda": [
+          3.1694651941277363,
+          6.774066420199921,
+          11.555027742188088
+        ],
+        "predictive_interval_kda": [
+          3.0292859800268483,
+          6.76172968555362,
+          12.227952545792599
+        ],
+        "inside_95_percent_predictive_interval": true
+      },
+      {
+        "time_days": 650.0,
+        "observed_mn_kda": 3.34,
+        "confidence_interval_kda": [
+          0.7888364624070078,
+          3.083286831620114,
+          9.18892024201339
+        ],
+        "predictive_interval_kda": [
+          0.769815426425672,
+          3.0757421503313647,
+          9.598015217287928
+        ],
+        "inside_95_percent_predictive_interval": true
+      }
+    ]
+  },
+  "distribution_prediction": {
+    "assumption": "initially monodisperse chains with independent, uniformly probable bond cleavage",
+    "initial_degree_of_polymerization": 368,
+    "time_days": [
+      0.0,
+      50.0,
+      100.0,
+      200.0,
+      300.0,
+      400.0,
+      500.0,
+      650.0
+    ],
+    "inferred_bond_break_probability": [
+      0.0,
+      0.0004493496136348535,
+      0.0010913709962255998,
+      0.0013932612012027903,
+      0.0034757003403412864,
+      0.01099055295403743,
+      0.01250434807814946,
+      0.03156357584558404
+    ],
+    "predicted_mw_kda": [
+      42.029999999999994,
+      39.80552469371229,
+      36.92320706888634,
+      35.67677738082379,
+      28.620960459588353,
+      15.674268257799877,
+      14.271376438146934,
+      6.519357002636276
+    ],
+    "predicted_dispersity": [
+      0.9999999999999998,
+      1.1032573363002298,
+      1.2303634478136067,
+      1.2828758497239767,
+      1.5495917953215135,
+      1.8771578751856142,
+      1.8977894199663476,
+      1.951903294202478
+    ],
+    "validation_status": "analytical prediction only; experimental SEC distribution data are not present in this dataset"
+  },
   "convergence": {
     "spatial": [
       {
@@ -148,5 +410,5 @@
     ],
     "minimum_bbox_dimension_mm": 17.573688507080078
   },
-  "runtime_seconds": 7.02319079998415
+  "runtime_seconds": 13.30678590000025
 }
