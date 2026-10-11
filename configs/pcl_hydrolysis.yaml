@@ -1,0 +1,43 @@
+# Units: mm, day, kDa, MPa. Acid concentration is normalized.
+material:
+  mn0_kda: 42.03
+  scission_rate_inv_kda_day: 4.72e-5
+  autocatalysis_per_acid: 2.4
+  acid_yield_kda: 47.8
+  acid_diffusivity_mm2_day: 0.02
+  mass_transfer_mm_day: 0.02
+  bulk_clearance_per_day: 0.0
+  external_acid: 0.0
+  crystallinity0: 0.45
+  chemicrystallization_gain: 0.20
+  chemicrystallization_rate_per_day: 0.02
+  crystal_hydrolysis_per_day: 0.0
+  crystal_transport_barrier: 2.0
+  porosity_transport_gain: 3.0
+  soluble_mn_kda: 3.0
+  dissolution_width_kda: 0.35
+  dissolution_rate_per_day: 0.03
+  modulus0_mpa: 350.0
+  strength0_mpa: 16.0
+  crystal_to_amorphous_modulus_ratio: 4.0
+  critical_entanglement_mn_kda: 2.5
+  modulus_tie_exponent: 0.25
+  strength_tie_exponent: 1.0
+  porosity_modulus_exponent: 2.0
+  porosity_strength_exponent: 1.5
+  temperature_c: 37.0
+  reference_temperature_c: 37.0
+  activation_energy_kj_mol: 60.0
+  ph_rate_multiplier: 1.0
+
+simulation:
+  geometry: slab
+  characteristic_length_mm: 1.0
+  duration_days: 730.0
+  output_interval_days: 5.0
+  cells: 80
+  relative_tolerance: 1.0e-6
+  absolute_tolerance: 1.0e-9
+  maximum_step_days: 2.0
+  functional_strength_fraction: 0.50
+

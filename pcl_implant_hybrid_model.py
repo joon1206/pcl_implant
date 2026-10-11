@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 
 """
-This is my attempt at trying out a hybrid PCL "implant-like" degradation model, for a 1D slab (approximate geometry). 
+Historical explicit prototype retained to reproduce the repository baseline.
+
+This implementation is not the supported solver: its legacy default violates
+the explicit diffusion stability limit and its shrinking-domain option omits
+the mapped-coordinate transport term. Use ``python -m pcl_model.cli simulate``
+for the conservative, unit-audited BDF implementation.
+
+This is my attempt at trying out a hybrid PCL "implant-like" degradation model, for a 1D slab (approximate geometry).
 
 The core ideas implemented are... (by the way, on their own all of these are pretty lightweight,
 and therefore adding any theoretical and/or mathematical limitations to the model is actually

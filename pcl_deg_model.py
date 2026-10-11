@@ -1,5 +1,9 @@
 """
-Degradation and mechanical strength scaling model (first order chain scission & SA/V scaling
+Legacy degradation and mechanical strength scaling model.
+
+This file is preserved for baseline reproducibility. The supported, unit-audited
+model is the ``pcl_model`` package; see README.md. The exponential law here is
+empirical and is not the constant-random-scission solution.
 
 The model does something like this:
     Mn(t) = Mn0 + exp(-k0 * (SA/V)^m * t)
@@ -510,7 +514,10 @@ def main() -> None:
     )
 
     # 3D surface plot across (t, SA/V)
-    t_grid = np.linspace(0.0, args.tmax, 26298)
+    # The original value (26,298) created >12 million surface faces and failed
+    # with a 382 MiB allocation in the baseline run. Plot resolution, not solver
+    # fidelity, controls this grid; 240 points is visually sufficient.
+    t_grid = np.linspace(0.0, args.tmax, 240)
     sav_grid_surface = np.linspace(args.sav_min, args.sav_max, 120)
     plot_E_surface_3d(
         outdir=args.outdir,
